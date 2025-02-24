@@ -1,0 +1,271 @@
+<?xml version="1.0" ?>
+<sdf version="1.10">
+    <world name="mi_primer_mundo">
+        <!-- <gravity>0 0 -9.8</gravity> -->
+        <physics name="1ms" type="ignored">
+            <!--Parametros de la simulacion  -->
+            <max_step_size>0.001</max_step_size>
+            <!-- Indica que 1s en la simulacion equivale a 1s real (real time)  -->
+            <real_time_factor>1.0</real_time_factor>
+        </physics>
+        <!-- Plugins esenciales de Gazebo -->
+        <!-- Maneja la simulación física (gravedad, colisiones, dinámica) -->
+        <plugin
+            filename="gz-sim-physics-system"
+            name="gz::sim::systems::Physics">
+        </plugin>
+        <!-- Procesa los comandos de usuario en tiempo real para interactuar con la simulación. -->
+        <plugin
+            filename="gz-sim-user-commands-system"
+            name="gz::sim::systems::UserCommands">
+        </plugin>
+         <!-- Difunde la información de la escena de simulación a otros sistemas. -->
+        <plugin
+            filename="gz-sim-scene-broadcaster-system"
+            name="gz::sim::systems::SceneBroadcaster">
+        </plugin>
+        <!-- Luminosidad del ambiente -->
+        <light type="directional" name="sun">
+            <cast_shadows>true</cast_shadows>
+            <pose>0 0 10 0 0 0</pose>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+            <attenuation>
+                <range>1000</range>
+                <constant>0.9</constant>
+                <linear>0.01</linear>
+                <quadratic>0.001</quadratic>
+            </attenuation>
+            <direction>-0.5 0.1 -0.9</direction>
+        </light>
+        <!-- Plano del suelo -->
+        <model name="ground_plane">
+            <static>true</static>
+            <link name="link">
+            <!-- Plano infinito direccion z=1 -->
+                <collision name="collision">
+                <geometry>
+                    <plane>
+                    <normal>0 0 1</normal>
+                    </plane>
+                </geometry>
+                </collision>
+                <visual name="visual">
+                <geometry>
+                    <plane>
+                    <normal>0 0 1</normal>
+                    <size>100 100</size>
+                    </plane>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+                </visual>
+            </link>
+        </model>
+        
+        <model name='vehicle_blue' canonical_link='chassis'>
+          <!-- La pose del modelo es relativa al mundo por defecto -->
+          <pose relative_to='world'>0 0 0 0 0 0</pose>
+          
+          <!-- Chasis del vehículo -->
+          <link name='chassis'>
+              <!-- Posición relativa del chasis dentro del modelo -->
+              <pose relative_to='__model__'>0.5 0 0.4 0 0 0</pose>
+              
+              <!-- Propiedades inerciales del chasis (masa e inercia) -->
+              <inertial>
+                  <mass>1.14395</mass>
+                  <inertia>
+                      <ixx>0.095329</ixx>
+                      <ixy>0</ixy>
+                      <ixz>0</ixz>
+                      <iyy>0.381317</iyy>
+                      <iyz>0</iyz>
+                      <izz>0.476646</izz>
+                  </inertia>
+              </inertial>
+              
+              <!-- Representación visual del chasis -->
+              <visual name='visual'>
+                  <geometry>
+                      <box>
+                          <size>2.0 1.0 0.5</size>
+                      </box>
+                  </geometry>
+                  <!-- Color del chasis (azul) -->
+                  <material>
+                      <ambient>0.0 0.0 1.0 1</ambient>
+                      <diffuse>0.0 0.0 1.0 1</diffuse>
+                      <specular>0.0 0.0 1.0 1</specular>
+                  </material>
+              </visual>
+              
+              <!-- Definición de colisión para el chasis -->
+              <collision name='collision'>
+                  <geometry>
+                      <box>
+                          <size>2.0 1.0 0.5</size>
+                      </box>
+                  </geometry>
+              </collision>
+          </link>
+          
+          <!-- Rueda izquierda -->
+          <link name='left_wheel'>
+              <!-- Posición relativa a la estructura del chasis -->
+              <pose relative_to="chassis">-0.5 0.6 0 -1.5707 0 0</pose> <!-- Ángulos en radianes -->
+              
+              <!-- Propiedades inerciales de la rueda -->
+              <inertial>
+                  <mass>1</mass>
+                  <inertia>
+                      <ixx>0.043333</ixx>
+                      <ixy>0</ixy>
+                      <ixz>0</ixz>
+                      <iyy>0.043333</iyy>
+                      <iyz>0</iyz>
+                      <izz>0.08</izz>
+                  </inertia>
+              </inertial>
+              
+              <!-- Representación visual de la rueda -->
+              <visual name='visual'>
+                  <geometry>
+                      <cylinder>
+                          <radius>0.4</radius>
+                          <length>0.2</length>
+                      </cylinder>
+                  </geometry>
+                  <!-- Color de la rueda (rojo) -->
+                  <material>
+                      <ambient>1.0 0.0 0.0 1</ambient>
+                      <diffuse>1.0 0.0 0.0 1</diffuse>
+                      <specular>1.0 0.0 0.0 1</specular>
+                  </material>
+              </visual>
+              
+              <!-- Definición de colisión para la rueda -->
+              <collision name='collision'>
+                  <geometry>
+                      <cylinder>
+                          <radius>0.4</radius>
+                          <length>0.2</length>
+                      </cylinder>
+                  </geometry>
+              </collision>
+          </link>
+          
+          <!-- Rueda derecha (similar a la izquierda pero con diferente posición) -->
+          <link name='right_wheel'>
+              <pose relative_to="chassis">-0.5 -0.6 0 -1.5707 0 0</pose>
+              <inertial>
+                  <mass>1</mass>
+                  <inertia>
+                      <ixx>0.043333</ixx>
+                      <ixy>0</ixy>
+                      <ixz>0</ixz>
+                      <iyy>0.043333</iyy>
+                      <iyz>0</iyz>
+                      <izz>0.08</izz>
+                  </inertia>
+              </inertial>
+              <visual name='visual'>
+                  <geometry>
+                      <cylinder>
+                          <radius>0.4</radius>
+                          <length>0.2</length>
+                      </cylinder>
+                  </geometry>
+                  <material>
+                      <ambient>1.0 0.0 0.0 1</ambient>
+                      <diffuse>1.0 0.0 0.0 1</diffuse>
+                      <specular>1.0 0.0 0.0 1</specular>
+                  </material>
+              </visual>
+              <collision name='collision'>
+                  <geometry>
+                      <cylinder>
+                          <radius>0.4</radius>
+                          <length>0.2</length>
+                      </cylinder>
+                  </geometry>
+              </collision>
+          </link>
+          
+          <!-- Rueda trasera (caster) -->
+          <link name='caster'>
+              <pose relative_to='chassis'>0.8 0 -0.2 0 0 0</pose>
+              <inertial>
+                  <mass>1</mass>
+                  <inertia>
+                      <ixx>0.016</ixx>
+                      <ixy>0</ixy>
+                      <ixz>0</ixz>
+                      <iyy>0.016</iyy>
+                      <iyz>0</iyz>
+                      <izz>0.016</izz>
+                  </inertia>
+              </inertial>
+              <visual name='visual'>
+                  <geometry>
+                      <sphere>
+                          <radius>0.2</radius>
+                      </sphere>
+                  </geometry>
+                  <material>
+                      <ambient>0.0 1 0.0 1</ambient>
+                      <diffuse>0.0 1 0.0 1</diffuse>
+                      <specular>0.0 1 0.0 1</specular>
+                  </material>
+              </visual>
+              <collision name='collision'>
+                  <geometry>
+                      <sphere>
+                          <radius>0.2</radius>
+                      </sphere>
+                  </geometry>
+              </collision>
+          </link>
+          
+          <!-- Juntas de las ruedas -->
+          <joint name='left_wheel_joint' type='revolute'>
+              <pose relative_to='left_wheel'/>
+              <parent>chassis</parent>
+              <child>left_wheel</child>
+              <axis>
+                  <xyz expressed_in='__model__'>0 1 0</xyz>
+              </axis>
+          </joint>
+          
+          <joint name='right_wheel_joint' type='revolute'>
+              <pose relative_to='right_wheel'/>
+              <parent>chassis</parent>
+              <child>right_wheel</child>
+              <axis>
+                  <xyz expressed_in='__model__'>0 1 0</xyz>
+              </axis>
+          </joint>
+          
+          <!-- Junta de la rueda trasera -->
+          <joint name='caster_wheel' type='ball'>
+              <parent>chassis</parent>
+              <child>caster</child>
+          </joint>
+          <!-- Plugin movimiento diferencial -->
+            <plugin
+                filename="gz-sim-diff-drive-system"
+                name="gz::sim::systems::DiffDrive">
+                <left_joint>left_wheel_joint</left_joint>
+                <right_joint>right_wheel_joint</right_joint>
+                <wheel_separation>1.2</wheel_separation>
+                <wheel_radius>0.4</wheel_radius>
+                <odom_publish_frequency>1</odom_publish_frequency>
+                <topic>cmd_vel</topic>
+            </plugin>
+        </model>
+      </world>
+</sdf>
+
